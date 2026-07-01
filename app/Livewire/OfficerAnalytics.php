@@ -2,11 +2,11 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use App\Models\Auction;
 use App\Models\Bid;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Livewire\Component;
 
 class OfficerAnalytics extends Component
 {
@@ -23,7 +23,7 @@ class OfficerAnalytics extends Component
         $closedAuctions = $auctions->where('status', 'closed')->count();
 
         $totalRevenue = $auctions->sum('current_price');
-        $totalBids = $auctions->sum(function($auction) {
+        $totalBids = $auctions->sum(function ($auction) {
             return $auction->bids->count();
         });
 
@@ -31,7 +31,7 @@ class OfficerAnalytics extends Component
 
         // Top performing auctions
         $topAuctions = $auctions
-            ->sortByDesc(function($auction) {
+            ->sortByDesc(function ($auction) {
                 return $auction->current_price;
             })
             ->take(5);
@@ -46,7 +46,7 @@ class OfficerAnalytics extends Component
             ->orderBy('date')
             ->get();
 
-        $chartDates = $bidActivityData->pluck('date')->map(fn($date) => date('M d', strtotime($date)))->toArray();
+        $chartDates = $bidActivityData->pluck('date')->map(fn ($date) => date('M d', strtotime($date)))->toArray();
         $chartCounts = $bidActivityData->pluck('count')->toArray();
 
         // Recent bids on officer's auctions

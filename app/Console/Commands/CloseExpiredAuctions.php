@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Auction;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
 class CloseExpiredAuctions extends Command
@@ -36,7 +36,7 @@ class CloseExpiredAuctions extends Command
         foreach ($expiredAuctions as $auction) {
             $auction->update(['status' => 'closed']);
             $count++;
-            
+
             // Optionally, we could dispatch an event here like AuctionClosed
             // to send notifications to the winner.
         }
@@ -45,7 +45,7 @@ class CloseExpiredAuctions extends Command
             $this->info("Successfully closed {$count} expired auctions.");
             Log::info("Closed {$count} expired auctions.");
         } else {
-            $this->info("No expired active auctions found.");
+            $this->info('No expired active auctions found.');
         }
     }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use App\Models\Auction;
 use App\Models\Bid;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
 
 class MyBids extends Component
 {
@@ -30,7 +30,7 @@ class MyBids extends Component
         foreach ($auctions as $auction) {
             $highestBid = $auction->bids->first();
             $userHighestBid = $auction->bids->where('user_id', $userId)->first();
-            
+
             $auctionData = [
                 'auction' => $auction,
                 'user_bid' => $userHighestBid->amount,

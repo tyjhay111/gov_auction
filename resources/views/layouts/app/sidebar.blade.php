@@ -12,7 +12,7 @@
 
             <flux:sidebar.nav>
                 <flux:sidebar.group :heading="__('Platform')" class="grid">
-                    <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                    <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard') || request()->routeIs('admin.dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="shopping-bag" :href="route('auctions.index')" :current="request()->routeIs('auctions.*')" wire:navigate>
@@ -38,45 +38,28 @@
                 @endif
 
                 @if(auth()->check() && auth()->user()->role === 'admin')
-                    <flux:sidebar.group :heading="__('Administration')" class="grid mt-4">
-                        <flux:sidebar.item icon="shield-check" :href="route('admin.dashboard')" :current="request()->routeIs('admin.dashboard')" wire:navigate>
-                            {{ __('Admin Dashboard') }}
+                    {{-- TODO: These pages are not built yet. Replace href="#" with real route() calls once each is implemented. --}}
+                    <flux:sidebar.group :heading="__('Coming Soon')" class="grid mt-4">
+                        <flux:sidebar.item icon="banknotes" href="#" class="opacity-50 cursor-not-allowed pointer-events-none">
+                            {{ __('Bid Monitoring') }}
                         </flux:sidebar.item>
-                        <flux:sidebar.item icon="users" href="{{ route('admin.dashboard') }}#users" :current="request()->routeIs('admin.dashboard')" wire:navigate>
-                            {{ __('Users') }}
+                        <flux:sidebar.item icon="credit-card" href="#" class="opacity-50 cursor-not-allowed pointer-events-none">
+                            {{ __('Payments') }}
                         </flux:sidebar.item>
-                        <flux:sidebar.item icon="shopping-bag" href="{{ route('admin.dashboard') }}#auctions" :current="request()->routeIs('admin.dashboard')" wire:navigate>
-                            {{ __('Auctions') }}
+                        <flux:sidebar.item icon="chart-pie" href="#" class="opacity-50 cursor-not-allowed pointer-events-none">
+                            {{ __('Reports') }}
                         </flux:sidebar.item>
-                        <flux:sidebar.item icon="tag" href="{{ route('admin.dashboard') }}#categories" :current="request()->routeIs('admin.dashboard')" wire:navigate>
-                            {{ __('Categories') }}
+                        <flux:sidebar.item icon="clipboard-document-check" href="#" class="opacity-50 cursor-not-allowed pointer-events-none">
+                            {{ __('Auction Approvals') }}
                         </flux:sidebar.item>
-                    </flux:sidebar.group>
-                @endif
-
-                @if(auth()->check() && auth()->user()->role !== 'admin' && auth()->user()->role !== 'officer')
-                    <flux:sidebar.group :heading="__('Bidder')" class="grid mt-4">
-                        <flux:sidebar.item icon="receipt" href="{{ route('my-bids') }}" :current="request()->routeIs('my-bids')" wire:navigate>
-                            {{ __('My Activity') }}
-                        </flux:sidebar.item>
-                        <flux:sidebar.item icon="list-bullet" :href="route('watchlist')" :current="request()->routeIs('watchlist')" wire:navigate>
-                            {{ __('Saved Items') }}
+                        <flux:sidebar.item icon="user-minus" href="#" class="opacity-50 cursor-not-allowed pointer-events-none">
+                            {{ __('Suspend Users') }}
                         </flux:sidebar.item>
                     </flux:sidebar.group>
                 @endif
             </flux:sidebar.nav>
 
             <flux:spacer />
-
-            <flux:sidebar.nav>
-                <flux:sidebar.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                    {{ __('Repository') }}
-                </flux:sidebar.item>
-
-                <flux:sidebar.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
-                    {{ __('Documentation') }}
-                </flux:sidebar.item>
-            </flux:sidebar.nav>
 
             <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
         </flux:sidebar>

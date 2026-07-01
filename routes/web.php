@@ -1,33 +1,50 @@
 <?php
 
+use App\Livewire\AdminDashboard;
+use App\Livewire\AuctionDetails;
+use App\Livewire\AuctionList;
+use App\Livewire\MyBids;
+use App\Livewire\OfficerAnalytics;
+use App\Livewire\OfficerAuctionManager;
+use App\Livewire\PaymentCheckout;
+use App\Livewire\WatchlistManager;
+use App\Models\Payment;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
 
-Route::get('/auctions', \App\Livewire\AuctionList::class)->name('auctions.index');
-Route::get('/auctions/{auction}', \App\Livewire\AuctionDetails::class)->name('auctions.show');
+Route::get('/auctions', AuctionList::class)->name('auctions.index');
+Route::get('/auctions/{auction}', AuctionDetails::class)->name('auctions.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::view('dashboard', 'dashboard')->name('dashboard');
-    Route::get('watchlist', \App\Livewire\WatchlistManager::class)->name('watchlist');
-    Route::get('my-bids', \App\Livewire\MyBids::class)->name('my-bids');
-    Route::get('payment/{auction}', \App\Livewire\PaymentCheckout::class)->name('payment.checkout');
+    Route::get('dashboard', function () {
+        if (auth()->user()->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
 
-    Route::get('receipt/{payment}', function (\App\Models\Payment $payment) {
+        return view('dashboard');
+    })->name('dashboard');
+
+    Route::get('watchlist', WatchlistManager::class)->name('watchlist');
+    Route::get('my-bids', MyBids::class)->name('my-bids');
+    Route::get('payment/{auction}', PaymentCheckout::class)->name('payment.checkout');
+
+    Route::get('receipt/{payment}', function (Payment $payment) {
         if ($payment->user_id !== auth()->id()) {
             abort(403);
         }
+
         return view('receipt', compact('payment'));
     })->name('receipt.show');
 });
 
 Route::middleware(['auth', 'verified', 'role:officer'])->group(function () {
-    Route::get('/officer/auctions', \App\Livewire\OfficerAuctionManager::class)->name('officer.auctions');
-    Route::get('/officer/analytics', \App\Livewire\OfficerAnalytics::class)->name('officer.analytics');
+    Route::get('/officer/auctions', OfficerAuctionManager::class)->name('officer.auctions');
+    Route::get('/officer/analytics', OfficerAnalytics::class)->name('officer.analytics');
 });
 
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-    Route::get('/admin', \App\Livewire\AdminDashboard::class)->name('admin.dashboard');
+    Route::get('/admin', AdminDashboard::class)->name('admin.dashboard');
 });
 
 require __DIR__.'/settings.php';

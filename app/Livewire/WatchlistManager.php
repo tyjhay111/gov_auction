@@ -2,9 +2,8 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
-use App\Models\Watchlist;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
 
 class WatchlistManager extends Component
 {
@@ -23,7 +22,7 @@ class WatchlistManager extends Component
             ->get();
 
         return view('livewire.watchlist-manager', [
-            'watchlists' => $watchlists
+            'watchlists' => $watchlists,
         ])->layout('layouts.app');
     }
 }

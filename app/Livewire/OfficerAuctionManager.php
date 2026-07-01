@@ -2,28 +2,36 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
-use Livewire\WithFileUploads;
 use App\Models\Auction;
 use App\Models\AuctionImage;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class OfficerAuctionManager extends Component
 {
     use WithFileUploads;
 
     public $auctions;
-    
+
     public $title;
+
     public $description;
+
     public $starting_price;
+
     public $reserve_price;
+
     public $start_time;
+
     public $end_time;
+
     public $status = 'draft';
+
     public $photos = [];
-    
+
     public $isEditing = false;
+
     public $auctionId = null;
 
     public function mount()
@@ -47,7 +55,7 @@ class OfficerAuctionManager extends Component
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
             'status' => 'required|in:draft,active,closed',
-            'photos.*' => 'image|max:2048' // 2MB Max
+            'photos.*' => 'image|max:2048', // 2MB Max
         ]);
 
         $data = [
@@ -68,12 +76,12 @@ class OfficerAuctionManager extends Component
             $auction = Auction::create($data);
         }
 
-        if (!empty($this->photos)) {
+        if (! empty($this->photos)) {
             foreach ($this->photos as $photo) {
                 $path = $photo->store('auctions', 'public');
                 AuctionImage::create([
                     'auction_id' => $auction->id,
-                    'image_path' => $path
+                    'image_path' => $path,
                 ]);
             }
         }

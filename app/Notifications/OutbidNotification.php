@@ -2,19 +2,19 @@
 
 namespace App\Notifications;
 
+use App\Models\Auction;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use App\Models\Auction;
-use App\Models\Bid;
 
 class OutbidNotification extends Notification
 {
     use Queueable;
 
     protected $auction;
+
     protected $newBidAmount;
+
     protected $newBidder;
 
     /**
@@ -46,7 +46,7 @@ class OutbidNotification extends Notification
             ->subject("You've been outbid on {$this->auction->title}")
             ->greeting("Hello {$notifiable->name},")
             ->line("You've been outbid on the auction: **{$this->auction->title}**")
-            ->line("New highest bid: \$" . number_format($this->newBidAmount, 2))
+            ->line('New highest bid: $'.number_format($this->newBidAmount, 2))
             ->line("Bidder: {$this->newBidder->name}")
             ->action('View Auction', route('auctions.show', $this->auction->id))
             ->line('You can place a new bid to stay in the running!')

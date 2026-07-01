@@ -15,7 +15,7 @@ class Auction extends Model
         'start_time',
         'end_time',
         'status',
-        'created_by'
+        'created_by',
     ];
 
     protected function casts(): array

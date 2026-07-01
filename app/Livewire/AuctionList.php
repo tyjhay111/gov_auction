@@ -2,15 +2,16 @@
 
 namespace App\Livewire;
 
+use App\Models\Auction;
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\Auction;
 
 class AuctionList extends Component
 {
     use WithPagination;
 
     public $search = '';
+
     public $status = 'active';
 
     protected $queryString = ['search', 'status'];
@@ -29,15 +30,15 @@ class AuctionList extends Component
                 }
             })
             ->when($this->search, function ($query) {
-                $query->where('title', 'like', '%' . $this->search . '%')
-                      ->orWhere('description', 'like', '%' . $this->search . '%');
+                $query->where('title', 'like', '%'.$this->search.'%')
+                    ->orWhere('description', 'like', '%'.$this->search.'%');
             })
             ->with('images')
             ->latest()
             ->paginate(12);
 
         return view('livewire.auction-list', [
-            'auctions' => $auctions
+            'auctions' => $auctions,
         ])->layout('layouts.app'); // Or layout('components.layouts.app') depending on the starter kit
     }
 }

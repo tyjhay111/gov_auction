@@ -2,12 +2,12 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
-use App\Models\User;
 use App\Models\Auction;
 use App\Models\Bid;
-use App\Models\Payment;
 use App\Models\Category;
+use App\Models\Payment;
+use App\Models\User;
+use Livewire\Component;
 use Livewire\WithPagination;
 
 class AdminDashboard extends Component
@@ -15,10 +15,12 @@ class AdminDashboard extends Component
     use WithPagination;
 
     public $activeTab = 'overview';
+
     public $newCategoryName = '';
 
     // Overview Stats
     public $stats = [];
+
     public $categories = [];
 
     public function mount()

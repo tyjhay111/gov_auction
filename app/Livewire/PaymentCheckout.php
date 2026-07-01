@@ -2,20 +2,24 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use App\Models\Auction;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Livewire\Component;
 
 class PaymentCheckout extends Component
 {
     public $auction;
+
     public $amount;
 
     public $cardNumber = '';
+
     public $expiry = '';
+
     public $cvc = '';
+
     public $nameOnCard = '';
 
     public function mount(Auction $auction)
@@ -25,7 +29,7 @@ class PaymentCheckout extends Component
         // Verify the user actually won this auction
         $highestBid = $auction->bids()->orderBy('amount', 'desc')->first();
 
-        if (!$highestBid || $highestBid->user_id !== Auth::id()) {
+        if (! $highestBid || $highestBid->user_id !== Auth::id()) {
             abort(403, 'You are not the winner of this auction.');
         }
 
@@ -53,11 +57,11 @@ class PaymentCheckout extends Component
             'cardNumber' => 'required|string|min:16',
             'expiry' => 'required|string|min:5',
             'cvc' => 'required|string|min:3',
-            'nameOnCard' => 'required|string'
+            'nameOnCard' => 'required|string',
         ]);
 
         // Mock payment processing logic
-        sleep(1); 
+        sleep(1);
 
         // Record the payment
         Payment::create([
@@ -65,10 +69,11 @@ class PaymentCheckout extends Component
             'auction_id' => $this->auction->id,
             'amount' => $this->amount,
             'status' => 'completed',
-            'reference' => 'TXN-' . strtoupper(Str::random(10)),
+            'reference' => 'TXN-'.strtoupper(Str::random(10)),
         ]);
 
         session()->flash('message', 'Payment successful! Receipt has been generated.');
+
         return redirect()->route('my-bids');
     }
 
