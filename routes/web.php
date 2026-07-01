@@ -24,6 +24,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         return view('dashboard');
     })->name('dashboard');
+    Route::get('/admin/bids', \App\Livewire\Admin\BidMonitoring::class)->name('admin.bids');
 
     Route::get('watchlist', WatchlistManager::class)->name('watchlist');
     Route::get('my-bids', MyBids::class)->name('my-bids');

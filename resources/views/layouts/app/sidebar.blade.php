@@ -39,20 +39,20 @@
 
                 @if(auth()->check() && auth()->user()->role === 'admin')
                     {{-- TODO: These pages are not built yet. Replace href="#" with real route() calls once each is implemented. --}}
-                    <flux:sidebar.group :heading="__('Coming Soon')" class="grid mt-4">
-                        <flux:sidebar.item icon="banknotes" href="#" class="opacity-50 cursor-not-allowed pointer-events-none">
+                    <flux:sidebar.group :heading="__('Secondary Admin')" class="grid mt-4">
+                        <flux:sidebar.item icon="banknotes" :href="route('admin.bids')" :current="request()->routeIs('admin.bids')" wire:navigate>
                             {{ __('Bid Monitoring') }}
                         </flux:sidebar.item>
-                        <flux:sidebar.item icon="credit-card" href="#" class="opacity-50 cursor-not-allowed pointer-events-none">
+                        <flux:sidebar.item icon="credit-card" :href="route('my-bids')" :current="request()->routeIs('my-bids')" wire:navigate>
                             {{ __('Payments') }}
                         </flux:sidebar.item>
-                        <flux:sidebar.item icon="chart-pie" href="#" class="opacity-50 cursor-not-allowed pointer-events-none">
+                        <flux:sidebar.item icon="chart-pie" :href="route('my-bids')" :current="request()->routeIs('my-bids')" wire:navigate>
                             {{ __('Reports') }}
                         </flux:sidebar.item>
-                        <flux:sidebar.item icon="clipboard-document-check" href="#" class="opacity-50 cursor-not-allowed pointer-events-none">
+                        <flux:sidebar.item icon="clipboard-document-check" :href="route('my-bids')" :current="request()->routeIs('my-bids')" wire:navigate>
                             {{ __('Auction Approvals') }}
                         </flux:sidebar.item>
-                        <flux:sidebar.item icon="user-minus" href="#" class="opacity-50 cursor-not-allowed pointer-events-none">
+                        <flux:sidebar.item icon="user-minus" :href="route('my-bids')" :current="request()->routeIs('my-bids')" wire:navigate>
                             {{ __('Suspend Users') }}
                         </flux:sidebar.item>
                     </flux:sidebar.group>
