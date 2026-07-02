@@ -61,7 +61,12 @@ class OutbidNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'auction_id' => $this->auction->id,
+            'auction_title' => $this->auction->title,
+            'amount' => $this->newBidAmount,
+            'bidder' => $this->newBidder->name,
+            'message' => "You've been outbid on \"{$this->auction->title}\". New highest bid: \${$this->newBidAmount}.",
+            'link' => route('auctions.show', $this->auction->id),
         ];
     }
 }
