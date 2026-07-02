@@ -22,6 +22,10 @@ class AdminDashboard extends Component
     public $stats = [];
 
     public $categories = [];
+    
+    public $suspendingAuctionId = null;
+public $suspensionReason = '';
+
 
     public function mount()
     {
@@ -77,13 +81,38 @@ class AdminDashboard extends Component
     }
 
     // Auction Moderation
-    public function updateAuctionStatus($id, $status)
-    {
-        $auction = Auction::findOrFail($id);
-        $auction->update(['status' => $status]);
-        $this->loadStats();
-        session()->flash('message', "Auction status updated to {$status}.");
+
+public function updateAuctionStatus($id, $status)
+{
+    if ($status === 'suspended') {
+        $this->suspendingAuctionId = $id;
+        return;
     }
+
+    $auction = Auction::findOrFail($id);
+    $auction->update(['status' => $status, 'suspension_reason' => null]);
+    $this->loadStats();
+    session()->flash('message', "Auction status updated to {$status}.");
+}
+
+public function confirmSuspend()
+{
+    $auction = Auction::findOrFail($this->suspendingAuctionId);
+    $auction->update([
+        'status' => 'suspended',
+        'suspension_reason' => $this->suspensionReason ?: null,
+    ]);
+    $this->loadStats();
+    $this->suspendingAuctionId = null;
+    $this->suspensionReason = '';
+    session()->flash('message', 'Auction suspended.');
+}
+
+public function cancelSuspend()
+{
+    $this->suspendingAuctionId = null;
+    $this->suspensionReason = '';
+}
 
     public function deleteAuction($id)
     {

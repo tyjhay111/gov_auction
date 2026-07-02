@@ -133,6 +133,11 @@
                             <span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium {{ $auction->status === 'active' ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400' }}">
                                 {{ ucfirst($auction->status) }}
                             </span>
+                            @if($auction->status === 'suspended' && $auction->suspension_reason)
+    <div class="mt-3 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 px-4 py-2 text-sm text-red-700 dark:text-red-400">
+        This auction has been suspended: {{ $auction->suspension_reason }}
+    </div>
+@endif
                             @auth
                                 <button wire:click="toggleWatchlist" class="text-sm font-medium {{ $isInWatchlist ? 'text-red-500' : 'text-zinc-500 dark:text-zinc-400' }} hover:text-red-600 flex items-center gap-1 transition">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 {{ $isInWatchlist ? 'fill-current' : '' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">

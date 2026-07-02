@@ -49,9 +49,9 @@
                         <flux:sidebar.item icon="chart-pie" :href="route('my-bids')" :current="request()->routeIs('my-bids')" wire:navigate>
                             {{ __('Reports') }}
                         </flux:sidebar.item>
-                        <flux:sidebar.item icon="clipboard-document-check" :href="route('my-bids')" :current="request()->routeIs('my-bids')" wire:navigate>
-                            {{ __('Auction Approvals') }}
-                        </flux:sidebar.item>
+                        <flux:sidebar.item icon="clipboard-document-check" :href="route('admin.dashboard')" :current="request()->routeIs('admin.dashboard')" wire:navigate>
+    {{ __('Auction Moderation') }}
+</flux:sidebar.item>
                         <flux:sidebar.item icon="user-minus" :href="route('my-bids')" :current="request()->routeIs('my-bids')" wire:navigate>
                             {{ __('Suspend Users') }}
                         </flux:sidebar.item>

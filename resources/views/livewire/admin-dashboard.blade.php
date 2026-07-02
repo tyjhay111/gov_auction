@@ -133,10 +133,14 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-zinc-500 dark:text-zinc-400">{{ $auction->creator->name ?? 'Unknown' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-zinc-500 dark:text-zinc-400">
                                 <select wire:change="updateAuctionStatus({{ $auction->id }}, $event.target.value)" class="text-sm rounded-md border-zinc-300 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="draft" {{ $auction->status === 'draft' ? 'selected' : '' }}>Draft</option>
-                                    <option value="active" {{ $auction->status === 'active' ? 'selected' : '' }}>Active</option>
-                                    <option value="closed" {{ $auction->status === 'closed' ? 'selected' : '' }}>Closed</option>
-                                </select>
+    <option value="draft" {{ $auction->status === 'draft' ? 'selected' : '' }}>Draft</option>
+    <option value="active" {{ $auction->status === 'active' ? 'selected' : '' }}>Active</option>
+    <option value="closed" {{ $auction->status === 'closed' ? 'selected' : '' }}>Closed</option>
+    <option value="suspended" {{ $auction->status === 'suspended' ? 'selected' : '' }}>Suspended</option>
+</select>
+@if($auction->status === 'suspended' && $auction->suspension_reason)
+    <p class="text-xs text-red-500 dark:text-red-400 mt-1">Reason: {{ $auction->suspension_reason }}</p>
+@endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-zinc-500 dark:text-zinc-400">${{ number_format($auction->current_price ?: $auction->starting_price, 2) }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -146,6 +150,19 @@
                     @endforeach
                 </tbody>
             </table>
+            @if($suspendingAuctionId)
+    <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white dark:bg-zinc-900 rounded-xl shadow-lg max-w-md w-full p-6">
+            <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-2">Suspend Auction</h3>
+            <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-4">Optionally provide a reason. This will be visible on the auction page.</p>
+            <textarea wire:model="suspensionReason" rows="3" placeholder="Reason (optional)" class="w-full rounded-md border-zinc-300 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 shadow-sm focus:border-blue-500 focus:ring-blue-500 mb-4"></textarea>
+            <div class="flex justify-end gap-3">
+                <button wire:click="cancelSuspend" class="rounded-md border border-zinc-300 dark:border-zinc-600 px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800">Cancel</button>
+                <button wire:click="confirmSuspend" class="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Suspend Auction</button>
+            </div>
+        </div>
+    </div>
+@endif
         </div>
         <div class="px-6 py-4 border-t border-zinc-200 dark:border-zinc-700">
             {{ $auctions->links() }}
