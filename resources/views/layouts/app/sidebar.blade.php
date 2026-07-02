@@ -43,9 +43,9 @@
                         <flux:sidebar.item icon="banknotes" :href="route('admin.bids')" :current="request()->routeIs('admin.bids')" wire:navigate>
                             {{ __('Bid Monitoring') }}
                         </flux:sidebar.item>
-                        <flux:sidebar.item icon="credit-card" :href="route('my-bids')" :current="request()->routeIs('my-bids')" wire:navigate>
-                            {{ __('Payments') }}
-                        </flux:sidebar.item>
+                        <flux:sidebar.item icon="credit-card" :href="route('admin.payments')" :current="request()->routeIs('admin.payments')" wire:navigate>
+    {{ __('Payments') }}
+</flux:sidebar.item>
                         <flux:sidebar.item icon="chart-pie" :href="route('my-bids')" :current="request()->routeIs('my-bids')" wire:navigate>
                             {{ __('Reports') }}
                         </flux:sidebar.item>

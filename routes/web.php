@@ -1,12 +1,14 @@
 <?php
 
 use App\Livewire\AdminDashboard;
+use App\Livewire\Admin\BidMonitoring;
+use App\Livewire\Admin\PaymentsOverview;
 use App\Livewire\AuctionDetails;
 use App\Livewire\AuctionList;
 use App\Livewire\MyBids;
 use App\Livewire\OfficerAnalytics;
 use App\Livewire\OfficerAuctionManager;
-use App\Livewire\PaymentCheckout;
+use App\Livewire\Admin\PaymentCheckout;
 use App\Livewire\WatchlistManager;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Route;
@@ -24,7 +26,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         return view('dashboard');
     })->name('dashboard');
-    Route::get('/admin/bids', \App\Livewire\Admin\BidMonitoring::class)->name('admin.bids');
 
     Route::get('watchlist', WatchlistManager::class)->name('watchlist');
     Route::get('my-bids', MyBids::class)->name('my-bids');
@@ -39,13 +40,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('receipt.show');
 });
 
+Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
+    Route::get('/admin', AdminDashboard::class)->name('admin.dashboard');
+    Route::get('/admin/bids', BidMonitoring::class)->name('admin.bids');
+    Route::get('/admin/payments', PaymentsOverview::class)->name('admin.payments');
+});
+
 Route::middleware(['auth', 'verified', 'role:officer'])->group(function () {
     Route::get('/officer/auctions', OfficerAuctionManager::class)->name('officer.auctions');
     Route::get('/officer/analytics', OfficerAnalytics::class)->name('officer.analytics');
-});
-
-Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-    Route::get('/admin', AdminDashboard::class)->name('admin.dashboard');
 });
 
 require __DIR__.'/settings.php';
