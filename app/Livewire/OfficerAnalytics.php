@@ -14,10 +14,8 @@ class OfficerAnalytics extends Component
     {
         $userId = Auth::id();
 
-        // Get officer's auctions
         $auctions = Auction::where('created_by', $userId)->with('bids.user')->get();
 
-        // Calculate stats
         $totalAuctions = $auctions->count();
         $activeAuctions = $auctions->where('status', 'active')->count();
         $closedAuctions = $auctions->where('status', 'closed')->count();
@@ -29,14 +27,12 @@ class OfficerAnalytics extends Component
 
         $averageBidsPerAuction = $totalAuctions > 0 ? round($totalBids / $totalAuctions, 2) : 0;
 
-        // Top performing auctions
         $topAuctions = $auctions
             ->sortByDesc(function ($auction) {
                 return $auction->current_price;
             })
             ->take(5);
 
-        // Bid activity over time (last 7 days)
         $bidActivityData = DB::table('bids')
             ->join('auctions', 'bids.auction_id', '=', 'auctions.id')
             ->where('auctions.created_by', $userId)
@@ -49,7 +45,6 @@ class OfficerAnalytics extends Component
         $chartDates = $bidActivityData->pluck('date')->map(fn ($date) => date('M d', strtotime($date)))->toArray();
         $chartCounts = $bidActivityData->pluck('count')->toArray();
 
-        // Recent bids on officer's auctions
         $recentBids = Bid::whereIn('auction_id', $auctions->pluck('id'))
             ->with('user', 'auction')
             ->latest()
@@ -65,8 +60,8 @@ class OfficerAnalytics extends Component
             'averageBidsPerAuction' => $averageBidsPerAuction,
             'topAuctions' => $topAuctions,
             'recentBids' => $recentBids,
-            'chartDates' => json_encode($chartDates),
-            'chartCounts' => json_encode($chartCounts),
+            'chartDates' => $chartDates,
+            'chartCounts' => $chartCounts,
         ])->layout('layouts.app');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Auction;
 use App\Models\AuctionImage;
+use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -13,6 +14,8 @@ class OfficerAuctionManager extends Component
     use WithFileUploads;
 
     public $auctions;
+
+    public $categories;
 
     public $title;
 
@@ -30,6 +33,8 @@ class OfficerAuctionManager extends Component
 
     public $photos = [];
 
+    public $selectedCategories = [];
+
     public $isEditing = false;
 
     public $auctionId = null;
@@ -37,12 +42,12 @@ class OfficerAuctionManager extends Component
     public function mount()
     {
         $this->loadAuctions();
+        $this->categories = Category::orderBy('name')->get();
     }
 
     public function loadAuctions()
     {
-        // Officers only see their own auctions
-        $this->auctions = Auction::where('created_by', Auth::id())->with('images')->latest()->get();
+        $this->auctions = Auction::where('created_by', Auth::id())->with(['images', 'categories'])->latest()->get();
     }
 
     public function save()
@@ -55,7 +60,9 @@ class OfficerAuctionManager extends Component
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
             'status' => 'required|in:draft,active,closed',
-            'photos.*' => 'image|max:2048', // 2MB Max
+            'photos.*' => 'image|max:2048',
+            'selectedCategories' => 'array',
+            'selectedCategories.*' => 'exists:categories,id',
         ]);
 
         $data = [
@@ -76,6 +83,8 @@ class OfficerAuctionManager extends Component
             $auction = Auction::create($data);
         }
 
+        $auction->categories()->sync($this->selectedCategories);
+
         if (! empty($this->photos)) {
             foreach ($this->photos as $photo) {
                 $path = $photo->store('auctions', 'public');
@@ -93,7 +102,7 @@ class OfficerAuctionManager extends Component
 
     public function edit($id)
     {
-        $auction = Auction::findOrFail($id);
+        $auction = Auction::with('categories')->findOrFail($id);
         $this->auctionId = $auction->id;
         $this->title = $auction->title;
         $this->description = $auction->description;
@@ -102,6 +111,7 @@ class OfficerAuctionManager extends Component
         $this->start_time = $auction->start_time->format('Y-m-d\TH:i');
         $this->end_time = $auction->end_time->format('Y-m-d\TH:i');
         $this->status = $auction->status;
+        $this->selectedCategories = $auction->categories->pluck('id')->toArray();
         $this->isEditing = true;
     }
 
@@ -113,7 +123,8 @@ class OfficerAuctionManager extends Component
 
     public function resetForm()
     {
-        $this->reset(['title', 'description', 'starting_price', 'reserve_price', 'start_time', 'end_time', 'status', 'photos', 'isEditing', 'auctionId']);
+        $this->reset(['title', 'description', 'starting_price', 'reserve_price', 'start_time', 'end_time', 'status', 'photos', 'selectedCategories', 'isEditing', 'auctionId']);
+        $this->status = 'draft';
     }
 
     public function render()
